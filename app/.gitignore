@@ -55,5 +55,3 @@ db.sqlite3
 p1.json
 products.json
 README.md
-docker-compose.yml
-Dockerfile

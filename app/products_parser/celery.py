@@ -7,7 +7,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "products_parser.settings")
 
 app = Celery("products_parser")
 
-app.config_from_object("django.conf:settings", namespace="CELERY")
+app.config_from_object("products_parser.settings", namespace="CELERY")
 
 app.autodiscover_tasks()
 

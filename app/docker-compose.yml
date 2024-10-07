@@ -1,0 +1,89 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7
+    container_name: "products_parser-redis"
+    restart: always
+    init: true
+    networks:
+      - products_parser-network
+  db:
+      image: postgres:15.3
+      container_name: "products_parser-db"
+      env_file:
+        - .env
+      volumes:
+        - products_parser-pgdata:/var/lib/postgresql/data
+      healthcheck:
+        test: "pg_isready -U postgres"
+        interval: 5s
+      networks:
+        - products_parser-network
+  api:
+    platform: linux/amd64
+    image: andermatheus/products_parser:latest
+    init: true
+    command: ["uwsgi", "--ini", "/app/scripts/uwsgi.ini", "--socket", "0.0.0.0:4031", "--processes", "2"]
+    restart: always
+    tty: true
+    env_file:
+      - .env
+    networks:
+      - products_parser-network
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - staticfile:/staticfiles
+  nginx:
+    platform: linux/amd64
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    init: true
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - staticfile:/staticfiles
+      - ./scripts/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - products_parser-network
+    depends_on:
+      - api
+networks:
+    products_parser-network:
+     driver: bridge
+volumes:
+    products_parser-pgdata:
+    staticfile:
+    media:
+
+ # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+
+
+# #!/bin/bash
+
+# docker image pull prysmiangrouplatam/cr_edi_api:latest
+
+# PREVIOUS_CONTAINER=$(docker ps --format "table {{.ID}}  {{.Names}}  {{.CreatedAt}}" | grep api | awk -F  "  " '{print $1}')
+
+# docker compose -f docker-compose.yml up -d --no-deps --scale api=2 --no-recreate api
+
+# sleep 5
+
+# docker kill -s SIGTERM $PREVIOUS_CONTAINER
+
+# sleep 1
+
+# docker rm -f $PREVIOUS_CONTAINER
+
+# docker compose -f docker-compose.yml  up -d --no-deps --scale api=1 --no-recreate api
+
+# docker compose -f docker-compose.yml restart nginx
+
+# PREVIOUS_CONTAINER=$(docker ps --format "table {{.ID}}  {{.Names}}  {{.CreatedAt}}" | grep api | awk -F  "  " '{print $1}')
+
+# docker container exec $PREVIOUS_CONTAINER /bin/sh -c 'cd /app && python manage.py migrate'

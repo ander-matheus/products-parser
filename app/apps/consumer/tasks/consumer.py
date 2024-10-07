@@ -13,11 +13,9 @@ from apps.products.models import Product
 
 @shared_task(name="get_importer_list")
 def get_importer_list():
-    print("started => get_importer_list")
-
     url = "https://challenges.coode.sh/food/data/json/index.txt"
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.status_code == requests.codes.ok:
         file_list = response.text.splitlines()
         for filename in file_list:
             ConsumerLog.objects.create(
