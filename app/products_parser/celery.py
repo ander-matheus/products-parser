@@ -9,13 +9,14 @@ app = Celery("products_parser")
 
 app.config_from_object("products_parser.settings", namespace="CELERY")
 
+
 app.autodiscover_tasks()
 
 
 app.conf.beat_schedule = {
     "get_importer_list": {
         "task": "get_importer_list",
-        "schedule": crontab(minute="*/5"),  # crontab(minute="0", hour="*/1"),
+        "schedule": crontab(minute="*/30"),  # crontab(minute="0", hour="*/1"),
     },
 }
 

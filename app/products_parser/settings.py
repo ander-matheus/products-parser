@@ -189,3 +189,4 @@ CACHES = {
 CELERY_BROKER_URL = f"redis://{REDIS_SERVER}:6379/{REDIS_DB}"
 CELERY_TASK_ALWAYS_EAGER = False
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+CELERY_TIMEZONE = "America/Sao_Paulo"

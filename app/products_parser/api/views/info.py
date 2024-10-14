@@ -2,8 +2,7 @@ import time
 
 import psutil
 from django.db import connection
-
-# from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import PeriodicTask
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -31,7 +30,9 @@ class InfoAPIView(APIView):
 
         db_connection = check_db_connection()
 
-        last_cron_execution = None
+        cron_last_run_at = (
+            PeriodicTask.objects.get(name="get_importer_list").last_run_at or None
+        )
 
         return Response(
             {
@@ -41,6 +42,6 @@ class InfoAPIView(APIView):
                 "avaliable_memory": f"{memory_info.available / (1024 ** 3):.2f} GB",
                 "used_memory": f"{memory_info.used / (1024 ** 3):.2f} GB",
                 "memory_percentage": f"{memory_info.percent}%",
-                "last_cron_execution": last_cron_execution,
+                "cron_last_run_at": cron_last_run_at,
             }
         )

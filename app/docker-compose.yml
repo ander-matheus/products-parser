@@ -59,31 +59,3 @@ volumes:
     products_parser-pgdata:
     staticfile:
     media:
-
- # extra_hosts:
-    #   - "host.docker.internal:host-gateway"
-
-
-# #!/bin/bash
-
-# docker image pull prysmiangrouplatam/cr_edi_api:latest
-
-# PREVIOUS_CONTAINER=$(docker ps --format "table {{.ID}}  {{.Names}}  {{.CreatedAt}}" | grep api | awk -F  "  " '{print $1}')
-
-# docker compose -f docker-compose.yml up -d --no-deps --scale api=2 --no-recreate api
-
-# sleep 5
-
-# docker kill -s SIGTERM $PREVIOUS_CONTAINER
-
-# sleep 1
-
-# docker rm -f $PREVIOUS_CONTAINER
-
-# docker compose -f docker-compose.yml  up -d --no-deps --scale api=1 --no-recreate api
-
-# docker compose -f docker-compose.yml restart nginx
-
-# PREVIOUS_CONTAINER=$(docker ps --format "table {{.ID}}  {{.Names}}  {{.CreatedAt}}" | grep api | awk -F  "  " '{print $1}')
-
-# docker container exec $PREVIOUS_CONTAINER /bin/sh -c 'cd /app && python manage.py migrate'
