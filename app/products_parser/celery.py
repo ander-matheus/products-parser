@@ -16,7 +16,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     "get_importer_list": {
         "task": "get_importer_list",
-        "schedule": crontab(minute="*/30"),  # crontab(minute="0", hour="*/1"),
+        "schedule": crontab(hour="*/1"),
     },
 }
 
